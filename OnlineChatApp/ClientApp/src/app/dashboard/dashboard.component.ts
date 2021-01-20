@@ -29,7 +29,8 @@ export class DashboardComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.getAllChatRooms();
+    //this.getAllChatRooms();
+    console.log(this.chat_room_list);
   }
 
 
@@ -73,6 +74,9 @@ export class DashboardComponent implements OnInit {
     }>(this._baseUrl + 'api/Message/GetAllChatRooms', {params: {user_id: this.userService.user.id.toString() }}).subscribe(result => {
       if(result.success){
         this.chat_room_list = result.chat_room_list;
+        if(this.chat_room_list == undefined){
+          this.chat_room_list = [];
+        }
       }
     });
   }
@@ -90,8 +94,7 @@ export class DashboardComponent implements OnInit {
 
   onUserSelected(event_data, user_id: number){
     var selected_user = this.user_list.find(a => a.id == user_id);
-    this.showChatRooms = true;
-    this.showUserList  = false;
+
     this.search_str = '';
 
     this.getChatRoom(selected_user);
@@ -113,21 +116,38 @@ export class DashboardComponent implements OnInit {
         return;
       }
 
-      if(r.chat_room.name.length == 0){
-        r.chat_room.name = receiver.first_name + ' ' + receiver.last_name;
-      }
+      if(r.chat_room != undefined){
+        if(r.chat_room.name.length == 0){
+          r.chat_room.name = receiver.first_name + ' ' + receiver.last_name;
+        }
 
-      if(this.chat_room_list.length > 0){
-        var chat_room = this.chat_room_list.find(a => a.id == r.chat_room.id);
-        if(chat_room == undefined){
-          this.chat_room_list.push(chat_room);
+        this.selected_chat_room = r.chat_room;
+        if(this.chat_room_list.length > 0){
+          var chat_room = this.chat_room_list.find(a => a.id == r.chat_room.id);
+          if(chat_room == undefined){
+            //this.chat_room_list.unshift(chat_room);
+          }
+        }
+        else{
+          this.chat_room_list.push(r.chat_room);
         }
       }
       else{
-        this.chat_room_list.push(r.chat_room);
-      }
 
-      this.selected_chat_room = r.chat_room;
+        let chatRoom: ChatRoom = new ChatRoom();
+        chatRoom.id =  1;
+        chatRoom.name = receiver.first_name + ' ' + receiver.last_name;
+        chatRoom.is_group = false;
+        console.log(chatRoom);
+        this.selected_chat_room = chatRoom;
+        this.chat_room_list = [];
+        this.chat_room_list.push(chatRoom);
+      }
+      console.log(r.chat_room);
+      console.log(this.chat_room_list);
+      this.showChatRooms = true;
+      this.showUserList  = false;
+
     });
 
   }

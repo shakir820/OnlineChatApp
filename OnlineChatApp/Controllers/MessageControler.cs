@@ -31,7 +31,8 @@ namespace OnlineChatApp.Controllers
             try
             {
 
-                var db_chat_rooms = await _context.ChatRooms.Join(_context.ChatRoomMembers, o => o.Id, i => i.ChatRoomId, (o, i) => new
+                var db_chat_rooms = await _context.ChatRooms.Join(_context.ChatRoomMembers, o => o.Id, i => i.ChatRoomId, 
+                    (o, i) => new
                 {
                     cr = o,
                     m = i
@@ -97,7 +98,12 @@ namespace OnlineChatApp.Controllers
 
                 if(db_r_crms.Count == 0 || db_s_crms.Count == 0)
                 {
+                    return new JsonResult(new
+                    {
+                        success = true,
+                        error = false,
 
+                    });
                 }
 
 
@@ -107,8 +113,13 @@ namespace OnlineChatApp.Controllers
                     var db_r_crm = db_r_crms.FirstOrDefault(a => a.ChatRoomId == item.ChatRoomId);
                     if (db_r_crm != null)
                     {
-                        chatRoomId = db_r_crm.ChatRoomId;
-                        break;
+                        var cr = await _context.ChatRooms.FirstOrDefaultAsync(a => a.Id == db_r_crm.ChatRoomId);
+                        if (cr.ChatRoomType == ChatRoomType.OneToOne)
+                        {
+                            chatRoomId = db_r_crm.ChatRoomId;
+                            break;
+                        }
+
                     }
                 }
 
@@ -126,63 +137,67 @@ namespace OnlineChatApp.Controllers
                 }
                 else
                 {
-                    using (var transaction = await _context.Database.BeginTransactionAsync())
+                    //using (var transaction = await _context.Database.BeginTransactionAsync())
+                    //{
+                    //    try
+                    //    {
+                    //        //create a new chat room
+                    //        var cr = new ChatRoom();
+                    //        cr.CreatedDate = DateTime.Now;
+                    //        cr.IsGroup = false;
+                    //        cr.Name = "";
+                    //        _context.ChatRooms.Add(cr);
+                    //        await _context.SaveChangesAsync();
+
+
+                    //        //sender
+                    //        var crm = new ChatRoomMember();
+                    //        crm.ChatRoomId = cr.Id;
+                    //        crm.MemeberId = sender_id;
+
+                    //        _context.ChatRoomMembers.Add(crm);
+                    //        await _context.SaveChangesAsync();
+
+
+                    //        //receiver
+                    //        crm = new ChatRoomMember();
+                    //        crm.ChatRoomId = cr.Id;
+                    //        crm.MemeberId = receiver_id;
+
+                    //        _context.ChatRoomMembers.Add(crm);
+                    //        await _context.SaveChangesAsync();
+
+
+                    //        await transaction.CommitAsync();
+
+                    //        var chat_room = ModelBindingResolver.ResolveChatRoom(cr);
+
+                    //        return new JsonResult(new
+                    //        {
+                    //            success = true,
+                    //            error = false,
+                    //            chat_room
+                    //        });
+                    //    }
+                    //    catch (Exception ex2)
+                    //    {
+                    //        await transaction.RollbackAsync();
+
+                    //        return new JsonResult(new
+                    //        {
+                    //            success = false,
+                    //            error = true,
+                    //            error_msg = ex2.Message
+                    //        });
+                    //    }
+                    //}
+
+
+                    return new JsonResult(new
                     {
-                        try
-                        {
-                            //create a new chat room
-                            var cr = new ChatRoom();
-                            cr.CreatedDate = DateTime.Now;
-                            cr.IsGroup = false;
-                            cr.Name = "";
-                            _context.ChatRooms.Add(cr);
-                            await _context.SaveChangesAsync();
-
-
-                            //sender
-                            var crm = new ChatRoomMember();
-                            crm.ChatRoomId = cr.Id;
-                            crm.MemeberId = sender_id;
-
-                            _context.ChatRoomMembers.Add(crm);
-                            await _context.SaveChangesAsync();
-
-
-                            //receiver
-                            crm = new ChatRoomMember();
-                            crm.ChatRoomId = cr.Id;
-                            crm.MemeberId = receiver_id;
-
-                            _context.ChatRoomMembers.Add(crm);
-                            await _context.SaveChangesAsync();
-
-
-                            await transaction.CommitAsync();
-
-                            var chat_room = ModelBindingResolver.ResolveChatRoom(cr);
-
-                            return new JsonResult(new
-                            {
-                                success = true,
-                                error = false,
-                                chat_room
-                            });
-                        }
-                        catch (Exception ex2)
-                        {
-                            await transaction.RollbackAsync();
-
-                            return new JsonResult(new
-                            {
-                                success = false,
-                                error = true,
-                                error_msg = ex2.Message
-                            });
-                        }
-                    }
-
-
-
+                        success = true,
+                        error = false
+                    });
 
                 }
             }

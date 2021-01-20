@@ -14,6 +14,6 @@ namespace OnlineChatApp.Models.ViewModels
         public string email { get; set; }
         public IFormFile profile_pic { get; set; }
 
-      
+        public ChatRoomType chat_room_type { get; set; } = ChatRoomType.OneToOne;
     }
 }

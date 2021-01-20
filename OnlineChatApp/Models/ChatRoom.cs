@@ -11,6 +11,7 @@ namespace OnlineChatApp.Models
         public bool IsGroup { get; set; } = false;
         public string Name { get; set; }
         public DateTime CreatedDate { get; set; }
+        public ChatRoomType ChatRoomType { get; set; } = ChatRoomType.OneToOne;
     }
 
     public class ChatRoomMember
@@ -38,6 +39,7 @@ namespace OnlineChatApp.Models
         public long ConversationId { get; set; }
         public long DeletedBy { get; set; }
         public bool ForAll { get; set; } = false;
+        public DateTime CreatedDate { get; set; }
     }
 
     public class ConversationSeen
@@ -48,6 +50,14 @@ namespace OnlineChatApp.Models
         public DateTime CreatedDate { get; set; }
     }
 
+
+
+
+    public enum ChatRoomType
+    {
+        Group = 1,
+        OneToOne = 2
+    }
 
 
 }

@@ -33,6 +33,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20210119060903_ConnectionIdAdded.cs" />
     <Compile Remove="Migrations\20210119060903_ConnectionIdAdded.Designer.cs" />
+    <Compile Remove="Migrations\20210120033723_ConversationDeleteAdded.cs" />
+    <Compile Remove="Migrations\20210120033723_ConversationDeleteAdded.Designer.cs" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

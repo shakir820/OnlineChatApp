@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineChatApp.Data;
 
 namespace OnlineChatApp.Migrations
 {
     [DbContext(typeof(OnlineChatDbContext))]
-    partial class OnlineChatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210120040205_ChatRoomTypeAdded")]
+    partial class ChatRoomTypeAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
