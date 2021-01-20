@@ -1,0 +1,82 @@
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="d-flex justify-content-center">
+      <div style="width: 500px;" class=" card p-5 shadow">
+        <div class="d-flex my-3 justify-content-center">
+          <h3 class=" font-weight-bold">REGISTRATION</h3>
+        </div>
+        <form (ngSubmit)="onSubmit()" #f="ngForm">
+          <div class=" form-group">
+            <label for="first_name">First Name</label>
+            <input  type="text"
+                    class="form-control"
+                    ngModel
+                    required
+                    placeholder="Enter first name"
+                    name="first_name"
+                    id="first_name">
+            <small id="firstNameError" class="text-danger" *ngIf="((f.form.controls['first_name'].valid === false && f.form.controls['first_name'].touched === true) ||
+           (f.form.controls['first_name'].valid === false && submitted === true ))">First name is required</small>
+          </div>
+          <div class=" form-group">
+            <label for="last_name">Last Name</label>
+            <input  type="text"
+                    class="form-control"
+                    ngModel
+                    required
+                    placeholder="Enter last name"
+                    name="last_name"
+                    id="last_name">
+            <small id="lastNameError" class="text-danger" *ngIf="((f.form.controls['last_name'].valid === false && f.form.controls['last_name'].touched === true) ||
+           (f.form.controls['last_name'].valid === false && submitted === true ))">Last name is required</small>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>s
+            <input type="email"
+                   name="email"
+                   required
+                   ngModel
+                   (input)="onEmailInput($event)"
+                   class="form-control"
+                   id="email"
+                   email
+                   aria-describedby="emailHelp"
+                   placeholder="Enter email">
+
+                   <div *ngIf="f.form.controls['email'].errors != undefined">
+                    <small *ngIf="(f.form.controls['email'].errors['required'] == true && f.form.controls['email'].touched) || (f.form.controls['email'].errors['required'] == true && submitted == true)" class=" text-danger">Email is required</small>
+                    <small *ngIf="(f.form.controls['email'].errors['email'] == true && f.form.controls['email'].touched) || (f.form.controls['email'].errors['email'] == true && submitted == true)" class=" text-danger">Enter a valid email</small>
+                   </div>
+
+            <div *ngIf="!isUniqueEmailAddress">
+              <small id="emailError" class="text-danger">Email address is already taken</small>
+            </div>
+          </div>
+
+          <div class=" d-flex mt-3">
+            <button type="submit" class="btn btn-primary flex-fill">
+              <div class=" d-flex">
+                <div class="flex-grow-1">
+                  {{registering? 'Registering': 'Register'}}
+                </div>
+                <div class="spinner-border text-light mr-3" *ngIf="registering" role="status">
+                </div>
+              </div>
+            </button>
+          </div>
+
+          <div class=" mt-2">
+            <small class=" text-muted">Already have account?</small>
+            <a class="btn-link ml-2" [routerLink]="['/login']">Login</a>
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+
