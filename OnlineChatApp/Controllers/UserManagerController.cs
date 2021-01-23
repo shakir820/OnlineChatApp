@@ -34,7 +34,7 @@ namespace OnlineChatApp.Controllers
             {
                 try
                 {
-                    var ne = userModel.email.Normalize();
+                    var ne = userModel.email.ToUpper();
                     var user_email = await _context.Users.AsNoTracking().FirstOrDefaultAsync(a => a.NormalizedEmail == ne);
 
                     if(user_email != null)
@@ -52,9 +52,9 @@ namespace OnlineChatApp.Controllers
                     user.Email = userModel.email;
                     user.FirstName = userModel.first_name;
                     user.LastName = userModel.last_name;
-                    user.NormalizedEmail = userModel.email.Normalize();
-                    user.NormalizedFirstName = userModel.first_name.Normalize();
-                    user.NormalizedLastName = userModel.last_name.Normalize();
+                    user.NormalizedEmail = userModel.email.ToUpper();
+                    user.NormalizedFirstName = userModel.first_name.ToUpper();
+                    user.NormalizedLastName = userModel.last_name.ToUpper();
 
                     _context.Users.Add(user);
                     await _context.SaveChangesAsync();
@@ -94,7 +94,7 @@ namespace OnlineChatApp.Controllers
         {
             try
             {
-                var ne = userModel.email.Normalize();
+                var ne = userModel.email.ToUpper();
                 var db_user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(a => a.NormalizedEmail == ne);
 
                 if(db_user == null)
@@ -205,7 +205,7 @@ namespace OnlineChatApp.Controllers
         {
             try
             {
-                var nsk = search_key.Normalize();
+                var nsk = search_key.ToUpper();
                 var db_user_list = await _context.Users.Where(a => a.NormalizedFirstName.Contains(nsk) || a.NormalizedLastName.Contains(nsk)).ToListAsync();
 
                 var user_list = new List<UserModel>();
@@ -235,6 +235,35 @@ namespace OnlineChatApp.Controllers
         }
 
 
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateConnectionId(UserModel userModel)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(a => a.Id == userModel.id);
+                user.ConnectionId = userModel.connection_id;
+                await _context.SaveChangesAsync();
+
+                return new JsonResult(new
+                {
+                    success = true,
+                    error = false
+                });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new
+                {
+                    success = false,
+                    error = true,
+                    error_msg = ex.Message
+                });
+            }
+
+        }
 
 
 

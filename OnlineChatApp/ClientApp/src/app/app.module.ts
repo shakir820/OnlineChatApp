@@ -7,8 +7,6 @@ import { MatSliderModule } from '@angular/material/slider'
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { CookieService } from 'ngx-cookie-service';
@@ -18,13 +16,12 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { MessageDetailsComponent } from './message-details/message-details.component';
 import { NzInputModule } from 'ng-zorro-antd/input';
 
+
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
-    FetchDataComponent,
     LoginPageComponent,
     RegistrationPageComponent,
     DashboardComponent,
@@ -38,7 +35,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     BrowserAnimationsModule,
     MatSliderModule,
     MatButtonModule,
-    NzInputModule
+    NzInputModule,
+
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

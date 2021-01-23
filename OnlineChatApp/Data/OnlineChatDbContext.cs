@@ -15,6 +15,8 @@ namespace OnlineChatApp.Data
 
         }
 
+       
+
         public DbSet<ConversationDelete> ConversationDeletes { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }

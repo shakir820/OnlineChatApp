@@ -1,7 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
 
-import { ChatRoom } from '../models/chat-room.model';
+import { MessageDetailsComponent } from '../message-details/message-details.component';
+
+import { ChatRoom, ChatRoomType } from '../models/chat-room.model';
 import { User } from '../models/user/user.model';
 import { UserService } from '../services/user.service';
 
@@ -10,7 +13,9 @@ import { UserService } from '../services/user.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+
+
+export class DashboardComponent implements OnInit, OnDestroy{
 
   constructor(public userService: UserService,
     private httpClient: HttpClient, @Inject('BASE_URL') baseUrl: string) {
@@ -25,13 +30,35 @@ export class DashboardComponent implements OnInit {
   search_str: string;
   showChatRooms: boolean = true;
   showUserList: boolean = false;
+  msg_received_subs: Subscription;
+
+  @ViewChild('messageBody', {static: false }) MessageBody: MessageDetailsComponent;
+
 
 
 
   ngOnInit(): void {
-    //this.getAllChatRooms();
-    console.log(this.chat_room_list);
+    this.getAllChatRooms();
+
+    this.msg_received_subs = this.userService.msg_received.subscribe((result: ChatRoom) => {
+
+      if(this.selected_chat_room != undefined && this.selected_chat_room.id == result.id){
+        this.selected_chat_room.conversation_list.push(...result.conversation_list);
+        this.MessageBody.scrollDown();
+      }
+      else{
+        var cr =  this.chat_room_list.find(a => a.id == result.id);
+        if(cr == undefined){
+          result.name = result.conversation_list[0].sender.first_name + ' ' + result.conversation_list[0].sender.last_name;
+          this.chat_room_list.unshift(result);
+        }
+      }
+    });
+
+    this.userService.startConnection();
+
   }
+
 
 
 
@@ -73,20 +100,14 @@ export class DashboardComponent implements OnInit {
       chat_room_list: ChatRoom[]
     }>(this._baseUrl + 'api/Message/GetAllChatRooms', {params: {user_id: this.userService.user.id.toString() }}).subscribe(result => {
       if(result.success){
-        this.chat_room_list = result.chat_room_list;
-        if(this.chat_room_list == undefined){
-          this.chat_room_list = [];
+        if(result.chat_room_list != undefined){
+          this.chat_room_list = result.chat_room_list;
         }
       }
     });
   }
 
 
-
-
-  onChatRoomSelect(event_data, user_id: number){
-    this.selectedUser =  this.user_list.find(a => a.id == user_id);
-  }
 
 
 
@@ -98,7 +119,8 @@ export class DashboardComponent implements OnInit {
     this.search_str = '';
 
     this.getChatRoom(selected_user);
-
+    this.showChatRooms = true;
+    this.showUserList  = false;
 
   }
 
@@ -121,32 +143,37 @@ export class DashboardComponent implements OnInit {
           r.chat_room.name = receiver.first_name + ' ' + receiver.last_name;
         }
 
-        this.selected_chat_room = r.chat_room;
         if(this.chat_room_list.length > 0){
           var chat_room = this.chat_room_list.find(a => a.id == r.chat_room.id);
           if(chat_room == undefined){
-            //this.chat_room_list.unshift(chat_room);
+            this.chat_room_list.unshift(r.chat_room);
+            this.selected_chat_room = r.chat_room;
+          }
+          else{
+            this.selected_chat_room = chat_room;
           }
         }
         else{
           this.chat_room_list.push(r.chat_room);
         }
+
+        this.MessageBody.getMessages();
       }
       else{
 
         let chatRoom: ChatRoom = new ChatRoom();
-        chatRoom.id =  1;
+        chatRoom.id =  -this.chat_room_list.length;
         chatRoom.name = receiver.first_name + ' ' + receiver.last_name;
         chatRoom.is_group = false;
+        chatRoom.chat_room_type = ChatRoomType.OneToOne;
+        chatRoom.conversation_list = [];
+        chatRoom.member_list = [];
+        chatRoom.member_list.push(this.userService.user);
+        chatRoom.member_list.push(receiver);
         console.log(chatRoom);
         this.selected_chat_room = chatRoom;
-        this.chat_room_list = [];
-        this.chat_room_list.push(chatRoom);
+        this.chat_room_list.unshift(chatRoom);
       }
-      console.log(r.chat_room);
-      console.log(this.chat_room_list);
-      this.showChatRooms = true;
-      this.showUserList  = false;
 
     });
 
@@ -156,10 +183,32 @@ export class DashboardComponent implements OnInit {
 
 
 
+  onChatRoomSelected(event_data, room_id: number){
+    console.log(this.chat_room_list);
+    this.selected_chat_room = this.chat_room_list.find(a => a.id == room_id);
+    setTimeout(() => {
+      this.MessageBody.getMessages();
+    }, 500);
+
+
+  }
+
+
 
   onSearchSubmit(){
 
     console.log('form submitted');
   }
+
+
+
+
+  ngOnDestroy(){
+    if(this.msg_received_subs != undefined){
+      this.msg_received_subs.unsubscribe();
+    }
+    this.userService.end_connection();
+  }
+
 
 }

@@ -13,7 +13,7 @@ namespace OnlineChatApp.Models.ViewModels
         public string last_name { get; set; }
         public string email { get; set; }
         public IFormFile profile_pic { get; set; }
-
+        public string connection_id { get; set; }
         public ChatRoomType chat_room_type { get; set; } = ChatRoomType.OneToOne;
     }
 }

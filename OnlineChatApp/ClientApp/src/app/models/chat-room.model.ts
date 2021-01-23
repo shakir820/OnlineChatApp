@@ -1,3 +1,5 @@
+import { Conversation } from "./conversation.model";
+import { User } from "./user/user.model";
 
 export class ChatRoom{
   id: number;
@@ -5,6 +7,9 @@ export class ChatRoom{
   name: string;
   created_date: Date;
   chat_room_type: ChatRoomType = ChatRoomType.OneToOne;
+  member_list: User[] = [];
+  conversation_list: Conversation[] = [];
+  user: User;
 }
 
 

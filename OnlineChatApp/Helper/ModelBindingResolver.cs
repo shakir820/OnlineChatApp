@@ -26,6 +26,19 @@ namespace OnlineChatApp.Helper
 
 
 
+        public static ConversationModel ResolveConversation(Conversation db_c)
+        {
+            var conversation = new ConversationModel();
+            conversation.chat_room_id = db_c.ChatRoomId;
+            conversation.created_date = db_c.CreatedDate;
+            conversation.id = db_c.Id;
+            conversation.message = db_c.Message;
+
+            return conversation;
+        }
+
+
+
 
         public static ChatRoomModel ResolveChatRoom(ChatRoom chatRoom)
         {
@@ -34,7 +47,8 @@ namespace OnlineChatApp.Helper
             cr.id = chatRoom.Id;
             cr.is_group = chatRoom.IsGroup;
             cr.name = chatRoom.Name;
-
+            cr.chat_room_type = chatRoom.ChatRoomType;
+            
             return cr;
         }
     }

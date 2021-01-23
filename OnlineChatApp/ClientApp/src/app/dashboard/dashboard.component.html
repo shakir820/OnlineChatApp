@@ -12,7 +12,7 @@
             <div class="small font-weight-bold mb-2">Start new chat</div>
             <form #d="ngForm" (ngSubmit)="onSearchSubmit()">
               <div class=" d-flex">
-                <input type="text" name="search_str" (input)="onSearchInput($event)" [(ngModel)]="search_str" nz-input placeholder="input search text" />
+                <input type="text" autocomplete="off"  name="search_str" (input)="onSearchInput($event)" [(ngModel)]="search_str" class="form-control" placeholder="Search user" />
               </div>
             </form>
           </div>
@@ -25,11 +25,11 @@
               <i class="fad fa-3x fa-empty-set"></i>
               <div class=" mt-3 font-weight-bold">You have no messages!</div>
             </div>
-            <div *ngFor="let item of chat_room_list" class="px-3 mb-2 py-2" >
-              <a>
+            <div *ngFor="let item of chat_room_list" class="px-3 mb-2 py-2" [ngClass]="{'border-left-primary': selected_chat_room != undefined && selected_chat_room.id == item.id}">
+              <a (click)="onChatRoomSelected($event, item.id)" [ngClass]="{'text-primary': selected_chat_room != undefined && selected_chat_room.id == item.id}">
                 <div  class=" d-flex">
                   <i  class="fad  fa-user"></i>
-                  <div style="height: 50px;" class="ml-2 font-weight-bold">{{ item.name }}</div>
+                  <div style="height: 50px;"  class="ml-2 font-weight-bold">{{ item.name }}</div>
                 </div>
               </a>
           </div>
@@ -59,7 +59,7 @@
       </div>
     </div>
     <div class=" col-sm-12 col-md-8">
-      <app-message-details *ngIf="selectedUser != undefined" [user]="selectedUser"></app-message-details>
+      <app-message-details *ngIf="selected_chat_room != undefined" #messageBody [chat_room]="selected_chat_room"></app-message-details>
     </div>
   </div>
 </div>

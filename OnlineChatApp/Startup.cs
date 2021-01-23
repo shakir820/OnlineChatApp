@@ -29,8 +29,17 @@ namespace OnlineChatApp
                 builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials().Build());
             });
 
-            services.AddDbContext<OnlineChatDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("OnlineChatContext")));
+
+
+            //for sql server
+            //services.AddDbContext<OnlineChatDbContext>(options =>
+            //options.UseSqlServer(Configuration.GetConnectionString("OnlineChatContext")));
+
+            //for sqlite
+            services.AddDbContext<OnlineChatDbContext>(options => options.UseSqlite("Data Source=sqlitedemo.db"));
+            
+            
+            
             services.AddSignalR();
 
             // In production, the Angular files will be served from this directory

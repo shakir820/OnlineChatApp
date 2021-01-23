@@ -7,14 +7,28 @@
       </div>
     </div>
   </div>
-  <div class=" card-body">
+  <div id="card_body" style="max-height: 500px; height: 500px; overflow-y: auto;" class="d-flex flex-column card-body">
+    <div id="msg_container" *ngIf="chat_room != undefined" class=" d-flex flex-column justify-content-end">
+      <div *ngFor="let item of chat_room.conversation_list" class="mt-2 d-flex flex-column"  [ngClass]="{'align-self-start': item.sender.id != userService.user.id, 'align-self-end': item.sender.id == userService.user.id}">
+        <div  class="rounded p-2 font-weight-bold"
+        [ngClass]="{'bg-primary': item.sender.id == userService.user.id, 'text-light': item.sender.id == userService.user.id, 'bg-light': item.sender.id != userService.user.id}">{{item.message}}</div>
+        <div class="mt-1 small">{{item.created_date | date: 'shortTime'}}</div>
+      </div>
+      <div id="btm_div" style="height: 5px;">
 
+      </div>
+
+      <div class="p-5 d-flex flex-column align-items-center justify-content-center align-self-center" *ngIf="chat_room.conversation_list.length == 0">
+        <i class="fad fa-3x fa-empty-set"></i>
+        <div class=" mt-3 font-weight-bold">You have no conversation!</div>
+      </div>
+    </div>
   </div>
   <div class=" card-footer">
     <form #f="ngForm" (ngSubmit)="onSubmit()">
       <div class=" d-flex">
         <input type="text" [(ngModel)]="my_message" name="my_message" id="my_message" class="form-control flex-fill"/>
-        <a class="ml-4 btn" type="submit"><i class="fad text-primary fa-paper-plane"></i></a>
+        <button class="ml-4 btn"  type="submit"><i class="fad text-primary fa-paper-plane"></i></button>
       </div>
     </form>
   </div>

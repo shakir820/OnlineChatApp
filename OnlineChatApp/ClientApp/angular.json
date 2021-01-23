@@ -25,10 +25,8 @@
             "styles": [
 
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.css",
-              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
-
               "src/themeResource/css/sb-admin-2.css",
+              "src/styles.css",
                "src/themeResource/vendor/fontawesome-free/css/all.min.css",
                "src/themeResource/vendor/fontawesome-free/css/brands.min.css",
                "src/themeResource/vendor/fontawesome-free/css/duotone.min.css",
