@@ -15,7 +15,7 @@ How to setup environment?
 
 
 
-How to lauch in your local PC?
+How to run project in your local PC?
 
 1. Clone the repository
 2. Open the ClientApp (/OnlineChatApp/OnlineChatApp) folder from the Visual Studio Code.
