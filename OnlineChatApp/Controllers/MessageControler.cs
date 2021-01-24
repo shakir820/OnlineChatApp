@@ -400,21 +400,29 @@ namespace OnlineChatApp.Controllers
                 {
                     var chat_room = JsonConvert.DeserializeObject<ChatRoomModel>(postMethodData.json_data);
                     var db_conversations = await _context.Conversations.AsNoTracking().Where(a => a.ChatRoomId == chat_room.id).ToListAsync();
+                    var db_deleted_conversations = await _context.ConversationDeletes.AsNoTracking().Where(a => a.ChatRoomId == chat_room.id && a.DeletedBy == chat_room.user.id).ToListAsync();
+
+                    var dcl = new List<ConversationDelete>();
                     foreach(var item in db_conversations)
                     {
-                        var delete_conv = new ConversationDelete();
-                        delete_conv.ChatRoomId = item.ChatRoomId;
-                        delete_conv.ConversationId = item.Id;
-                        delete_conv.CreatedDate = DateTime.Now;
-                        delete_conv.DeletedBy = chat_room.user.id;
-                        delete_conv.ForAll = false;
+                        if(db_deleted_conversations.FirstOrDefault(a =>a.ConversationId == item.Id) == null)
+                        {
+                            var delete_conv = new ConversationDelete();
+                            delete_conv.ChatRoomId = item.ChatRoomId;
+                            delete_conv.ConversationId = item.Id;
+                            delete_conv.CreatedDate = DateTime.Now;
+                            delete_conv.DeletedBy = chat_room.user.id;
+                            delete_conv.ForAll = false;
 
-                        _context.ConversationDeletes.Add(delete_conv);
-                        await _context.SaveChangesAsync();
+                            dcl.Add(delete_conv);
+
+                        }                        
                     }
+                    await _context.ConversationDeletes.AddRangeAsync(dcl);
+                    await _context.SaveChangesAsync();
 
 
-                   await transaction.CommitAsync();
+                    await transaction.CommitAsync();
 
                     return new JsonResult(new
                     {
