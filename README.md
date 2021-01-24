@@ -22,10 +22,19 @@ How to lauch in your local PC?
 3. Open Terminal in the Visual Studio Code and press entry typing "npm install"
 4. After finish of installing everything open the solution in the Visual Studio 2019 edition.
 
-//for SQL Server. If you want to use sqlite you can skin (No. 5) this step.
-5. open appsettings.json from the solution explorer. Use your database connection string in the "OnlineChatContext". Don't replace the "OnlineChatContext" string.
-6. Open NuGet Package Manager Console. Then type "Update-Database" and press enter.
-7. Build and run the project. 
+//for SQL Server. If you want to use sqlite you can skip 5 & 6 steps.
+
+5. Open appsettings.json from the solution explorer. Use your database connection string in the "OnlineChatContext". Don't replace the "OnlineChatContext" string.
+
+6. Open Startup.cs from the solution explorer. uncomment 
+             //services.AddDbContext<OnlineChatDbContext>(options =>
+            //options.UseSqlServer(Configuration.GetConnectionString("OnlineChatContext")));
+  and comment out
+           services.AddDbContext<OnlineChatDbContext>(options => options.UseSqlite("Data Source=sqlitedemo.db"));
+  
+  
+7. Open NuGet Package Manager Console. Then type "Update-Database" and press enter.
+8. Build and run the project. 
 
 
 How to use? 
